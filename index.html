@@ -628,6 +628,28 @@
     // Sistema de confirmaciones con almacenamiento persistente
     let isLoggedIn = false;
     const ADMIN_PASSWORD = 'margarita2025'; // Cambia esta contraseña
+    let guestsData = []; // Array local para almacenar invitados
+
+    // Cargar datos del localStorage al iniciar
+    function loadFromLocalStorage() {
+      try {
+        const stored = localStorage.getItem('wedding_guests');
+        if (stored) {
+          guestsData = JSON.parse(stored);
+        }
+      } catch (e) {
+        console.error('Error loading from localStorage:', e);
+      }
+    }
+
+    // Guardar en localStorage
+    function saveToLocalStorage() {
+      try {
+        localStorage.setItem('wedding_guests', JSON.stringify(guestsData));
+      } catch (e) {
+        console.error('Error saving to localStorage:', e);
+      }
+    }
 
     function toggleAdminSection() {
       const section = document.getElementById('adminSection');
@@ -665,6 +687,8 @@
 
     // Permitir login con Enter
     document.addEventListener('DOMContentLoaded', () => {
+      loadFromLocalStorage();
+      
       const passwordInput = document.getElementById('adminPassword');
       if (passwordInput) {
         passwordInput.addEventListener('keypress', (e) => {
@@ -675,116 +699,75 @@
       }
     });
 
-    async function loadGuests() {
+    function loadGuests() {
       if (!isLoggedIn) return;
       
-      try {
-        const result = await window.storage.list('guest-', true);
-        const guestList = document.getElementById('guestList');
-        
-        if (!result || !result.keys || result.keys.length === 0) {
-          guestList.innerHTML = '<p style="text-align: center; color: #999;">Aún no hay confirmaciones.</p>';
-          return;
-        }
-
-        let totalGuests = 0;
-        let html = '<div style="margin-bottom: 1.5rem; text-align: center; font-size: 1.2rem; color: var(--vino);"><strong>Total de confirmaciones: ' + result.keys.length + '</strong></div>';
-        
-        for (const key of result.keys) {
-          try {
-            const guestData = await window.storage.get(key, true);
-            if (guestData && guestData.value) {
-              const guest = JSON.parse(guestData.value);
-              totalGuests += 1 + (guest.acompanantes || 0);
-              html += `
-                <div style="border-bottom: 1px solid #f0f0f0; padding: 1rem 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                  <div style="flex: 1; min-width: 200px;">
-                    <strong style="color: var(--vino);">${guest.nombre}</strong><br>
-                    <small style="color: #999;">${guest.correo}</small><br>
-                    <small>👥 ${guest.acompanantes || 0} acompañante(s) | 📅 ${new Date(guest.fecha).toLocaleDateString('es-ES')}</small>
-                  </div>
-                  <button onclick="deleteGuest('${key}')" style="background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">Eliminar</button>
-                </div>
-              `;
-            }
-          } catch (e) {
-            console.error('Error loading guest:', e);
-          }
-        }
-        
-        html = '<div style="margin-bottom: 1.5rem; text-align: center; font-size: 1.3rem; color: var(--vino); background: var(--beige); padding: 1rem; border-radius: 10px;"><strong>📊 Total de personas: ' + totalGuests + '</strong></div>' + html;
-        guestList.innerHTML = html;
-      } catch (error) {
-        console.error('Error loading guests:', error);
-        document.getElementById('guestList').innerHTML = '<p style="text-align: center; color: #dc3545;">Error al cargar las confirmaciones.</p>';
+      const guestList = document.getElementById('guestList');
+      
+      if (guestsData.length === 0) {
+        guestList.innerHTML = '<p style="text-align: center; color: #999;">Aún no hay confirmaciones.</p>';
+        return;
       }
+
+      let totalGuests = 0;
+      let html = '<div style="margin-bottom: 1.5rem; text-align: center; font-size: 1.2rem; color: var(--vino);"><strong>Total de confirmaciones: ' + guestsData.length + '</strong></div>';
+      
+      guestsData.forEach((guest, index) => {
+        totalGuests += 1 + (guest.acompanantes || 0);
+        html += `
+          <div style="border-bottom: 1px solid #f0f0f0; padding: 1rem 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div style="flex: 1; min-width: 200px;">
+              <strong style="color: var(--vino);">${guest.nombre}</strong><br>
+              <small style="color: #999;">${guest.correo}</small><br>
+              <small>👥 ${guest.acompanantes || 0} acompañante(s) | 📅 ${new Date(guest.fecha).toLocaleDateString('es-ES')}</small>
+            </div>
+            <button onclick="deleteGuest(${index})" style="background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">Eliminar</button>
+          </div>
+        `;
+      });
+      
+      html = '<div style="margin-bottom: 1.5rem; text-align: center; font-size: 1.3rem; color: var(--vino); background: var(--beige); padding: 1rem; border-radius: 10px;"><strong>📊 Total de personas: ' + totalGuests + '</strong></div>' + html;
+      guestList.innerHTML = html;
     }
 
-    async function deleteGuest(key) {
+    function deleteGuest(index) {
       if (!isLoggedIn) return;
       if (!confirm('¿Estás seguro de eliminar esta confirmación?')) return;
       
-      try {
-        await window.storage.delete(key, true);
-        await loadGuests();
-      } catch (error) {
-        console.error('Error deleting guest:', error);
-        alert('Error al eliminar la confirmación');
-      }
+      guestsData.splice(index, 1);
+      saveToLocalStorage();
+      loadGuests();
     }
 
-    async function clearAllGuests() {
+    function clearAllGuests() {
       if (!isLoggedIn) return;
       if (!confirm('¿Estás seguro de eliminar TODAS las confirmaciones? Esta acción no se puede deshacer.')) return;
       
-      try {
-        const result = await window.storage.list('guest-', true);
-        if (result && result.keys) {
-          for (const key of result.keys) {
-            await window.storage.delete(key, true);
-          }
-        }
-        await loadGuests();
-        alert('Todas las confirmaciones han sido eliminadas.');
-      } catch (error) {
-        console.error('Error clearing guests:', error);
-        alert('Error al eliminar las confirmaciones');
-      }
+      guestsData = [];
+      saveToLocalStorage();
+      loadGuests();
+      alert('Todas las confirmaciones han sido eliminadas.');
     }
 
-    async function exportGuests() {
+    function exportGuests() {
       if (!isLoggedIn) return;
       
-      try {
-        const result = await window.storage.list('guest-', true);
-        if (!result || !result.keys || result.keys.length === 0) {
-          alert('No hay confirmaciones para exportar.');
-          return;
-        }
-
-        let csvContent = 'Nombre,Correo,Acompañantes,Fecha de Confirmación\n';
-        
-        for (const key of result.keys) {
-          try {
-            const guestData = await window.storage.get(key, true);
-            if (guestData && guestData.value) {
-              const guest = JSON.parse(guestData.value);
-              csvContent += `"${guest.nombre}","${guest.correo}",${guest.acompanantes || 0},"${new Date(guest.fecha).toLocaleDateString('es-ES')}"\n`;
-            }
-          } catch (e) {
-            console.error('Error exporting guest:', e);
-          }
-        }
-
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'confirmaciones_boda_margarita_harold.csv';
-        link.click();
-      } catch (error) {
-        console.error('Error exporting guests:', error);
-        alert('Error al exportar las confirmaciones');
+      if (guestsData.length === 0) {
+        alert('No hay confirmaciones para exportar.');
+        return;
       }
+
+      let csvContent = 'Nombre,Correo,Acompañantes,Fecha de Confirmación\n';
+      
+      guestsData.forEach(guest => {
+        csvContent += `"${guest.nombre}","${guest.correo}",${guest.acompanantes || 0},"${new Date(guest.fecha).toLocaleDateString('es-ES')}"\n`;
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'confirmaciones_boda_margarita_harold.csv';
+      link.click();
     }
 
     // Manejo del formulario
@@ -797,13 +780,6 @@
       
       if (!nombre || !correo) {
         alert('Por favor completa todos los campos obligatorios.');
-        return;
-      }
-
-      // Verificar si el almacenamiento está disponible
-      if (!window.storage || typeof window.storage.set !== 'function') {
-        console.error('El almacenamiento no está disponible');
-        alert('El sistema de almacenamiento no está disponible en este momento. Por favor, envía tu confirmación por correo a: mhinestrozatorres@gmail.com\n\nNombre: ' + nombre + '\nCorreo: ' + correo + '\nAcompañantes: ' + acompanantes);
         return;
       }
 
@@ -821,37 +797,27 @@
       submitBtn.disabled = true;
 
       try {
-        // Crear un ID único para el invitado
-        const timestamp = Date.now();
-        const random = Math.random().toString(36).substring(2, 9);
-        const guestId = `guest-${timestamp}-${random}`;
+        // Guardar en el array y localStorage
+        guestsData.push(guestData);
+        saveToLocalStorage();
         
-        console.log('Intentando guardar:', guestId, guestData);
+        // Éxito - limpiar formulario y mostrar mensaje
+        document.getElementById('rsvpForm').reset();
+        document.getElementById('successMessage').style.display = 'block';
         
-        // Guardar en almacenamiento compartido
-        const result = await window.storage.set(guestId, JSON.stringify(guestData), true);
+        setTimeout(() => {
+          document.getElementById('successMessage').style.display = 'none';
+        }, 5000);
         
-        console.log('Resultado del guardado:', result);
-        
-        if (result && result.key) {
-          // Éxito - limpiar formulario y mostrar mensaje
-          document.getElementById('rsvpForm').reset();
-          document.getElementById('successMessage').style.display = 'block';
-          
-          setTimeout(() => {
-            document.getElementById('successMessage').style.display = 'none';
-          }, 5000);
-          
-          // Si el admin está logueado, recargar la lista
-          if (isLoggedIn) {
-            await loadGuests();
-          }
-        } else {
-          throw new Error('No se recibió confirmación del guardado');
+        // Si el admin está logueado, recargar la lista
+        if (isLoggedIn) {
+          loadGuests();
         }
+        
+        console.log('Confirmación guardada exitosamente:', guestData);
       } catch (error) {
         console.error('Error completo:', error);
-        alert('Hubo un error al guardar tu confirmación.\n\nPor favor, envía tu confirmación por correo a:\nmhinestrozatorres@gmail.com\n\nNombre: ' + nombre + '\nCorreo: ' + correo + '\nAcompañantes: ' + acompanantes + '\n\nError técnico: ' + error.message);
+        alert('Hubo un error al guardar tu confirmación. Por favor intenta nuevamente.');
       } finally {
         // Restaurar el botón
         submitBtn.textContent = originalText;
