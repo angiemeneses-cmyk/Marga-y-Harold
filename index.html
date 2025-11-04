@@ -808,27 +808,35 @@
       };
 
       try {
-        const guestId = 'guest:' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        await window.storage.set(guestId, JSON.stringify(guestData), true);
+        // Crear un ID único para el invitado
+        const timestamp = Date.now();
+        const random = Math.random().toString(36).substring(2, 9);
+        const guestId = `guest:${timestamp}_${random}`;
         
-        document.getElementById('rsvpForm').reset();
-        document.getElementById('successMessage').style.display = 'block';
+        // Guardar en almacenamiento compartido
+        const result = await window.storage.set(guestId, JSON.stringify(guestData), true);
         
-        setTimeout(() => {
-          document.getElementById('successMessage').style.display = 'none';
-        }, 5000);
-        
-        await loadGuests();
-        
-        document.querySelector('.admin-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (result) {
+          // Éxito - limpiar formulario y mostrar mensaje
+          document.getElementById('rsvpForm').reset();
+          document.getElementById('successMessage').style.display = 'block';
+          
+          setTimeout(() => {
+            document.getElementById('successMessage').style.display = 'none';
+          }, 5000);
+          
+          // Si el admin está logueado, recargar la lista
+          if (isLoggedIn) {
+            await loadGuests();
+          }
+        } else {
+          throw new Error('No se pudo guardar la confirmación');
+        }
       } catch (error) {
         console.error('Error saving guest:', error);
-        alert('Hubo un error al guardar tu confirmación. Por favor intenta nuevamente.');
+        alert('Hubo un error al guardar tu confirmación. Por favor intenta nuevamente o contacta a los novios directamente.');
       }
     });
-
-    // Cargar invitados al iniciar
-    loadGuests();
   </script>
 </body>
 </html>
