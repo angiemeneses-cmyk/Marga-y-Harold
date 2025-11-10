@@ -1,424 +1,193 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
- <head>
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nuestra Boda – Margarita y Harold</title>
-  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="icon" href="favicon.ico">
   <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500&display=swap');
-        
-        :root {
-            --rosa: #e9c3c8;
-            --rosado: #e4a0a8;
-            --vino: #8b3e50;
-            --gris: #555;
-            --beige: #fdf9f8;
-            --blanco: #ffffff;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html, body {
-            height: 100%;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            color: var(--gris);
-            background: var(--beige);
-            overflow-x: hidden;
-            box-sizing: border-box;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .animate-in {
-            animation: fadeInUp 1s ease-out forwards;
-            opacity: 0;
-        }
-        
-        .hero {
-            height: 100%;
-            background: linear-gradient(rgba(139,62,80,0.3), rgba(0,0,0,0.4)), 
-                        linear-gradient(135deg, var(--rosa) 0%, var(--rosado) 50%, var(--vino) 100%);
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: #fff;
-            position: relative;
-            padding: 2rem;
-        }
-        
-        .hero::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 150px;
-            background: linear-gradient(to bottom, transparent, var(--beige));
-        }
-        
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2.5rem, 8vw, 5rem);
-            font-weight: 400;
-            letter-spacing: 3px;
-            margin-bottom: 1.5rem;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-            animation: fadeInUp 1.2s ease-out;
-            z-index: 1;
-        }
-        
-        .hero h1 span {
-            color: var(--rosa);
-            font-style: italic;
-        }
-        
-        .hero p {
-            font-style: italic;
-            font-size: clamp(1rem, 3vw, 1.4rem);
-            max-width: 500px;
-            line-height: 1.8;
-            text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-            animation: fadeInUp 1.5s ease-out;
-            z-index: 1;
-        }
-        
-        .countdown-section {
-            text-align: center;
-            padding: 6rem 1.5rem;
-            background: linear-gradient(135deg, #fff 0%, var(--beige) 100%);
-        }
-        
-        .countdown-box {
-            background: linear-gradient(135deg, var(--blanco), var(--rosa));
-            border-radius: 50%;
-            width: 280px;
-            height: 280px;
-            margin: 3rem auto;
-            box-shadow: 0 10px 40px rgba(139,62,80,0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            animation: pulse 3s ease-in-out infinite;
-        }
-        
-        .countdown-time {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            font-family: 'Playfair Display', serif;
-            color: var(--vino);
-        }
-        
-        .countdown-values {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-        }
-        
-        .countdown-values div {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .countdown-values span:first-child {
-            font-size: 2.5rem;
-            font-weight: 700;
-        }
-        
-        .countdown-values span:last-child {
-            font-size: 0.7rem;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            opacity: 0.8;
-            margin-top: 0.3rem;
-        }
-        
-        h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 500;
-            color: var(--vino);
-            margin-bottom: 3rem;
-            text-align: center;
-            position: relative;
-            width: 100%;
-        }
-        
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(to right, var(--rosa), var(--rosado));
-            border-radius: 2px;
-        }
-        
-        section {
-            padding: 6rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .dresscode-invitatis {
-            background: var(--blanco);
-            padding: 6rem 2rem;
-        }
-        
-        .dress-icons {
-            display: flex;
-            justify-content: center;
-            gap: 5rem;
-            flex-wrap: wrap;
-            margin: 4rem 0;
-        }
-        
-        .dress-item {
-            text-align: center;
-            transition: transform .3s ease;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        .dress-item:nth-child(2) {
-            animation-delay: 1.5s;
-        }
-        
-        .dress-item:hover {
-            transform: translateY(-10px);
-        }
-        
-        .dress-icon {
-            width: 100px;
-            height: 100px;
-            margin-bottom: 1.5rem;
-            filter: drop-shadow(0 5px 15px rgba(139,62,80,0.2));
-            transition: all .3s ease;
-        }
-        
-        .dress-item:hover .dress-icon {
-            transform: scale(1.1) rotate(5deg);
-            filter: drop-shadow(0 8px 20px rgba(139,62,80,0.3));
-        }
-        
-        .dress-label {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
-            color: var(--vino);
-            font-weight: 600;
-        }
-        
-        .dress-note {
-            text-align: center;
-            font-style: italic;
-            color: var(--vino);
-            font-size: 1.1rem;
-            margin-top: 3rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .event-details {
-            background: var(--beige);
-        }
-        
-        .events-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 3rem;
-            margin-top: 3rem;
-        }
-        
-        .event-card {
-            background: var(--blanco);
-            padding: 3rem 2rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(139,62,80,0.1);
-            text-align: center;
-            transition: transform .3s ease, box-shadow .3s ease;
-        }
-        
-        .event-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(139,62,80,0.2);
-        }
-        
-        .event-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 2rem;
-            fill: var(--vino);
-        }
-        
-        .event-card h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            color: var(--vino);
-            margin-bottom: 1rem;
-        }
-        
-        .event-card p {
-            color: var(--gris);
-            line-height: 1.8;
-            margin-bottom: 0.5rem;
-        }
-        
-        .event-time {
-            font-weight: 600;
-            color: var(--rosado);
-            font-size: 1.2rem;
-            margin-top: 1rem;
-        }
-        
-        .rsvp-section {
-            background: linear-gradient(135deg, var(--rosa) 0%, var(--rosado) 100%);
-            text-align: center;
-            color: var(--blanco);
-        }
-        
-        .rsvp-section h2 {
-            color: var(--blanco);
-        }
-        
-        .rsvp-section h2::after {
-            background: var(--blanco);
-        }
-        
-        .rsvp-content {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .rsvp-content p {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            margin-bottom: 2rem;
-            color: var(--blanco);
-        }
-        
-        .contact-info {
-            background: rgba(255,255,255,0.2);
-            padding: 2rem;
-            border-radius: 15px;
-            margin-top: 2rem;
-        }
-        
-        .contact-info p {
-            font-size: 1.1rem;
-            margin: 1rem 0;
-        }
-        
-        footer {
-            background: var(--vino);
-            color: var(--blanco);
-            text-align: center;
-            padding: 3rem 2rem;
-        }
-        
-        footer p {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-style: italic;
-        }
-        
-        @media (max-width: 768px) {
-            .countdown-box {
-                width: 240px;
-                height: 240px;
-            }
-            
-            .countdown-values {
-                gap: 1rem;
-            }
-            
-            .countdown-values span:first-child {
-                font-size: 2rem;
-            }
-            
-            .dress-icons {
-                gap: 3rem;
-            }
-            
-            section {
-                padding: 4rem 1.5rem;
-            }
-        }
-    </style>
-  <style>@view-transition { navigation: auto; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
-  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
- </head>
- <body>
-  <div class="hero">
-   <h1><span id="bride-name">Margarita</span> <span>&amp;</span> <span id="groom-name">Harold</span></h1>
-   <p id="hero-subtitle">Nos casamos y queremos celebrarlo contigo</p>
-  </div>
-  <section class="countdown-section">
-   <h2>Faltan</h2>
-   <div class="countdown-box">
-    <div class="countdown-time">
-     <div class="countdown-values">
-      <div><span id="days">0</span> <span>Días</span>
-      </div>
-      <div><span id="hours">0</span> <span>Horas</span>
-      </div>
-      <div><span id="minutes">0</span> <span>Min</span>
-      </div>
-     </div>
-    </div>
-   </div>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500&display=swap');
+
+    :root {
+      --rosa: #e9c3c8;
+      --rosado: #e4a0a8;
+      --vino: #8b3e50;
+      --gris: #555;
+      --beige: #fdf9f8;
+      --blanco: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--gris);
+      background: var(--beige);
+      overflow-x: hidden;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
+    @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+
+    .animate-in { animation: fadeInUp 1s ease-out forwards; opacity: 0; }
+
+    .hero {
+      height: 100vh;
+      background: linear-gradient(rgba(139,62,80,0.3),rgba(0,0,0,0.4)), url('BODA.jpg');
+      background-size: cover; background-position: center; background-attachment: fixed;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      text-align:center; color:#fff; position:relative;
+    }
+
+    .hero::before {
+      content:''; position:absolute; bottom:0; left:0; right:0; height:150px;
+      background:linear-gradient(to bottom,transparent,var(--beige));
+    }
+
+    .hero h1 {
+      font-family:'Playfair Display',serif; font-size:5rem; font-weight:400;
+      letter-spacing:3px; margin-bottom:1.5rem; text-shadow:2px 2px 10px rgba(0,0,0,0.3);
+      animation: fadeInUp 1.2s ease-out;
+    }
+    .hero h1 span { color:var(--rosa); font-style:italic; }
+    .hero p { font-style:italic; font-size:1.4rem; max-width:500px; line-height:1.8;
+      text-shadow:1px 1px 5px rgba(0,0,0,0.5); animation: fadeInUp 1.5s ease-out; }
+
+    .countdown-section { text-align:center; padding:6rem 1.5rem;
+      background:linear-gradient(135deg,#fff 0%,var(--beige) 100%);
+    }
+
+    .countdown-box {
+      background:linear-gradient(135deg,var(--blanco),var(--rosa));
+      border-radius:50%; width:280px; height:280px; margin:3rem auto;
+      box-shadow:0 10px 40px rgba(139,62,80,0.15);
+      display:flex; align-items:center; justify-content:center; position:relative;
+      animation:pulse 3s ease-in-out infinite;
+    }
+
+    .countdown-time { display:flex; flex-direction:column; align-items:center; gap:1rem;
+      font-family:'Playfair Display',serif; color:var(--vino); }
+
+    .countdown-values { display:flex; justify-content:center; gap:2rem; }
+    .countdown-values div { display:flex; flex-direction:column; align-items:center; }
+    .countdown-values span:first-child { font-size:2.5rem; font-weight:700; }
+    .countdown-values span:last-child { font-size:0.7rem; letter-spacing:1.5px;
+      text-transform:uppercase; opacity:0.8; margin-top:0.3rem; }
+
+    h2 {
+      font-family:'Playfair Display',serif; font-size:3rem; font-weight:500; color:var(--vino);
+      margin-bottom:3rem; text-align:center; position:relative; width:100%;
+    }
+    h2::after {
+      content:''; position:absolute; bottom:-10px; left:50%; transform:translateX(-50%);
+      width:80px; height:3px; background:linear-gradient(to right,var(--rosa),var(--rosado));
+      border-radius:2px;
+    }
+
+    section { padding:6rem 2rem; max-width:1200px; margin:0 auto; }
+
+    .dresscode-invitatis { background:var(--blanco); padding:6rem 2rem; }
+    .dress-icons { display:flex; justify-content:center; gap:5rem; flex-wrap:wrap; margin:4rem 0; }
+    .dress-item { text-align:center; transition:transform .3s ease; animation:float 3s ease-in-out infinite; }
+    .dress-item:nth-child(2){animation-delay:1.5s;}
+    .dress-item:hover { transform:translateY(-10px); }
+    .dress-icon { width:100px; height:100px; margin-bottom:1.5rem;
+      filter:drop-shadow(0 5px 15px rgba(139,62,80,0.2)); transition:all .3s ease; }
+    .dress-item:hover .dress-icon { transform:scale(1.1) rotate(5deg);
+      filter:drop-shadow(0 8px 20px rgba(139,62,80,0.3)); }
+    .dress-note { text-align:center; font-style:italic; color:var(--vino); font-size:1.1rem; margin-top:3rem; }
+    .hearts { text-align:center; font-size:2rem; color:var(--rosado); margin-top:1.5rem; letter-spacing:1rem; }
+
+    .event-card {
+      background:var(--blanco); border-radius:20px; box-shadow:0 8px 30px rgba(0,0,0,0.08);
+      padding:3rem; margin:2rem auto; max-width:600px; border:1px solid rgba(233,195,200,0.3);
+      transition:all .3s ease;
+    }
+    .event-card:hover { transform:translateY(-8px); box-shadow:0 15px 40px rgba(139,62,80,0.15); }
+
+    .btn {
+      background:linear-gradient(135deg,var(--rosado),var(--vino));
+      border:none; color:white; padding:1rem 3rem; border-radius:50px;
+      text-decoration:none; display:inline-block; transition:all .3s ease;
+      margin-top:1rem; box-shadow:0 5px 15px rgba(139,62,80,0.3);
+    }
+    .btn:hover { transform:scale(1.05) translateY(-2px); box-shadow:0 8px 25px rgba(139,62,80,0.4); }
+
+    .form-section { background:linear-gradient(135deg,var(--beige) 0%,#fff 100%); text-align:center; }
+    .form-container {
+      background:white; border-radius:20px; padding:3rem; max-width:600px; margin:auto;
+      box-shadow:0 10px 40px rgba(0,0,0,0.1); border:1px solid rgba(233,195,200,0.3);
+    }
+    .form-input {
+      width:100%; padding:1.2rem; margin-bottom:1.5rem; border:2px solid #f0f0f0;
+      border-radius:12px; font-size:1rem; transition:all .3s ease;
+    }
+    .form-input:focus { outline:none; border-color:var(--rosado); box-shadow:0 0 0 3px rgba(228,160,168,0.1); }
+
+    .music-btn, .admin-toggle-btn {
+      position:fixed; bottom:2rem; border:none; border-radius:50%; width:60px; height:60px;
+      font-size:1.5rem; cursor:pointer; box-shadow:0 8px 25px rgba(0,0,0,0.3);
+      display:flex; align-items:center; justify-content:center; transition:all .3s ease; z-index:50;
+    }
+    .music-btn { right:2rem; background:linear-gradient(135deg,var(--rosado),var(--vino)); color:white; }
+    .music-btn:hover { transform:scale(1.1) rotate(10deg); box-shadow:0 12px 35px rgba(139,62,80,0.4); }
+
+    .admin-toggle-btn { left:2rem; background:linear-gradient(135deg,#6c757d,#5a6268); color:white; }
+    .admin-toggle-btn:hover { transform:scale(1.1); box-shadow:0 12px 35px rgba(0,0,0,0.4); }
+
+    footer { background:linear-gradient(135deg,var(--vino),#6d2f3f); color:#fff; text-align:center; padding:4rem 1rem; }
+    footer h3 { font-family:'Playfair Display',serif; font-size:2.5rem; margin:1.5rem 0; letter-spacing:2px; }
+
+    @media (max-width:768px){
+      .hero h1{font-size:3rem;}
+      .countdown-box{width:240px;height:240px;}
+      .dress-icon{width:80px;height:80px;}
+      .music-btn,.admin-toggle-btn{width:50px;height:50px;font-size:1.2rem;bottom:1.5rem;}
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <h1>Margarita <span>&</span> Harold</h1>
+    <p>"Más valen dos que uno, porque obtienen más fruto de su esfuerzo."<br><em>Eclesiastés 4:9</em></p>
   </section>
-  <section class="dresscode-invitatis">
-   <h2>Código de Vestimenta</h2>
-   <div class="dress-icons">
-    <div class="dress-item">
-     <svg class="dress-icon" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L35 25 L30 25 L30 90 L70 90 L70 25 L65 25 Z" fill="#8b3e50" /> <circle cx="50" cy="20" r="8" fill="#8b3e50" /> <rect x="45" y="30" width="10" height="5" fill="#e9c3c8" />
-     </svg>
-     <p class="dress-label">Formal</p>
+
+  <section class="countdown-section animate-in">
+    <h2>Faltan</h2>
+    <div class="countdown-box">
+      <div class="countdown-time" id="countdown">
+        <div class="countdown-values">
+          <div><span>00</span><span>Días</span></div>
+          <div><span>00</span><span>Horas</span></div>
+          <div><span>00</span><span>Min</span></div>
+          <div><span>00</span><span>Seg</span></div>
+        </div>
+      </div>
     </div>
-    <div class="dress-item">
-     <svg class="dress-icon" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 20 L30 35 L25 35 L35 90 L65 90 L75 35 L70 35 Z" fill="#e4a0a8" /> <circle cx="50" cy="15" r="8" fill="#e4a0a8" /> <path d="M35 50 Q50 60 65 50" stroke="#8b3e50" stroke-width="2" fill="none" />
-     </svg>
-     <p class="dress-label">Elegante</p>
+  </section>
+
+  <section class="dresscode-invitatis animate-in">
+    <h2>Código de vestimenta</h2>
+    <div class="dress-icons">
+      <div class="dress-item">
+        <a href="https://www.flaticon.es/icono-gratis/corbata_2290551" target="_blank">
+          <img src="https://cdn-icons-png.flaticon.com/512/2290/2290551.png" class="dress-icon" alt="Corbata">
+        </a>
+        <p><strong>Ellos:</strong> Formal</p>
+      </div>
+      <div class="dress-item">
+        <a href="https://www.flaticon.es/icono-gratis/vestir_3994081" target="_blank">
+          <img src="https://cdn-icons-png.flaticon.com/512/3994/3994081.png" class="dress-icon" alt="Vestido">
+        </a>
+        <p><strong>Ellas:</strong> Divinas</p>
+      </div>
     </div>
-   </div>
-   <p class="dress-note" id="dresscode-note">Formal - Evitar blanco y beige</p>
+    <p class="dress-note">Nos reservamos el color blanco</p>
+    <div class="hearts"><span>♡</span><span>♡</span><span>♡</span></div>
   </section>
   <section class="event-details">
    <h2>Detalles del Evento</h2>
